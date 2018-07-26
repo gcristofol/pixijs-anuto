@@ -1,4 +1,4 @@
-const ENEMY_VELOCITY = 0.5;
+const ENEMY_VELOCITY = 0.9;
 
 class Wave {
 
@@ -64,21 +64,26 @@ class Wave {
 
   contain(sprite, map) {
     //if sprite moving down
+    var col, row
     if (sprite.vy > 0) {
-      var col = Math.floor(sprite.x / PLATEAU_WIDTH);
-      var row = Math.floor((sprite.y + sprite.height) / PLATEAU_HEIGHT);
+      col = Math.floor(sprite.x / PLATEAU_WIDTH);
+      row = Math.floor((sprite.y + sprite.height) / PLATEAU_HEIGHT);
     } else if (sprite.vx > 0) {
-      var col = Math.floor((sprite.x + sprite.width) / PLATEAU_WIDTH);
-      var row = Math.floor(sprite.y / PLATEAU_HEIGHT);
+      col = Math.floor((sprite.x + sprite.width) / PLATEAU_WIDTH);
+      row = Math.floor(sprite.y / PLATEAU_HEIGHT);
     } else if (sprite.vx < 0) {
-      var col = Math.floor((sprite.x - 1) / PLATEAU_WIDTH);
-      var row = Math.floor(sprite.y / PLATEAU_HEIGHT);
+      col = Math.floor((sprite.x - 1) / PLATEAU_WIDTH);
+      row = Math.floor(sprite.y / PLATEAU_HEIGHT);
     }else if (sprite.vy < 0) {
-      var col = Math.floor(sprite.x / PLATEAU_WIDTH);
-      var row = Math.floor((sprite.y - 1) / PLATEAU_HEIGHT);
+      col = Math.floor(sprite.x / PLATEAU_WIDTH);
+      row = Math.floor((sprite.y - 1) / PLATEAU_HEIGHT);
     }
 
     return map[row][col] === '0'
+  }
+  
+  head() {
+    return this.enemy;
   }
 
 }
