@@ -1,3 +1,5 @@
+const ENEMY_VELOCITY = 0.9;
+
 class Wave {
 
   // TODO Make enemies into an array
@@ -15,7 +17,7 @@ class Wave {
     this.enemy.scale.y = .35
 
     //move down by default until first collision
-    this.enemy.vy = 1
+    this.enemy.vy = ENEMY_VELOCITY
     this.enemy.vx = 0
 
     waveScene.addChild(this.enemy);
@@ -32,28 +34,28 @@ class Wave {
     
     //TODO check enemy makes it outside the map
 
-    //check if the next move has crossed boundaries 
+    //check if the next move has crossed boundaries
     if (this.contain(this.enemy, map)) {
       console.log("enemy hits wall");
       //determine where to go next
-      var col = Math.floor(this.enemy.x / PLATEAU_WIDTH);
-      var row = Math.floor(this.enemy.y / PLATEAU_HEIGHT);
+      var col = Math.floor(this.enemy.x / TILE_SIZE);
+      var row = Math.floor(this.enemy.y / TILE_SIZE);
       console.log("where to go next...", map[row][col]);
       switch (map[row][col]) {
         case 'R':
           this.enemy.vy = 0
-          this.enemy.vx = 1
+          this.enemy.vx = ENEMY_VELOCITY
           break;
         case 'D':
-          this.enemy.vy = 1
+          this.enemy.vy = ENEMY_VELOCITY
           this.enemy.vx = 0
           break;
         case 'L':
           this.enemy.vy = 0
-          this.enemy.vx = -1
+          this.enemy.vx = -ENEMY_VELOCITY
           break;
         case 'U':
-          this.enemy.vy = -1
+          this.enemy.vy = -ENEMY_VELOCITY
           this.enemy.vx = 0
           break;
       }
@@ -62,21 +64,26 @@ class Wave {
 
   contain(sprite, map) {
     //if sprite moving down
+    var col, row
     if (sprite.vy > 0) {
-      var col = Math.floor(sprite.x / PLATEAU_WIDTH);
-      var row = Math.floor((sprite.y + sprite.height) / PLATEAU_HEIGHT);
+      col = Math.floor(sprite.x / TILE_SIZE);
+      row = Math.floor((sprite.y + sprite.height) / TILE_SIZE);
     } else if (sprite.vx > 0) {
-      var col = Math.floor((sprite.x + sprite.width) / PLATEAU_WIDTH);
-      var row = Math.floor(sprite.y / PLATEAU_HEIGHT);
+      col = Math.floor((sprite.x + sprite.width) / TILE_SIZE);
+      row = Math.floor(sprite.y / TILE_SIZE);
     } else if (sprite.vx < 0) {
-      var col = Math.floor((sprite.x - 1) / PLATEAU_WIDTH);
-      var row = Math.floor(sprite.y / PLATEAU_HEIGHT);
+      col = Math.floor((sprite.x - 1) / TILE_SIZE);
+      row = Math.floor(sprite.y / TILE_SIZE);
     }else if (sprite.vy < 0) {
-      var col = Math.floor(sprite.x / PLATEAU_WIDTH);
-      var row = Math.floor((sprite.y - 1) / PLATEAU_HEIGHT);
+      col = Math.floor(sprite.x / TILE_SIZE);
+      row = Math.floor((sprite.y - 1) / TILE_SIZE);
     }
 
     return map[row][col] === '0'
+  }
+  
+  head() {
+    return this.enemy;
   }
 
 }
