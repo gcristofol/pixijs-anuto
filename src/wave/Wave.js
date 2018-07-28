@@ -38,8 +38,8 @@ class Wave {
     if (this.contain(this.enemy, map)) {
       console.log("enemy hits wall");
       //determine where to go next
-      var col = Math.floor(this.enemy.x / PLATEAU_WIDTH);
-      var row = Math.floor(this.enemy.y / PLATEAU_HEIGHT);
+      var col = Math.floor(this.enemy.x / TILE_SIZE);
+      var row = Math.floor(this.enemy.y / TILE_SIZE);
       console.log("where to go next...", map[row][col]);
       switch (map[row][col]) {
         case 'R':
@@ -66,17 +66,17 @@ class Wave {
     //if sprite moving down
     var col, row
     if (sprite.vy > 0) {
-      col = Math.floor(sprite.x / PLATEAU_WIDTH);
-      row = Math.floor((sprite.y + sprite.height) / PLATEAU_HEIGHT);
+      col = Math.floor(sprite.x / TILE_SIZE);
+      row = Math.floor((sprite.y + sprite.height) / TILE_SIZE);
     } else if (sprite.vx > 0) {
-      col = Math.floor((sprite.x + sprite.width) / PLATEAU_WIDTH);
-      row = Math.floor(sprite.y / PLATEAU_HEIGHT);
+      col = Math.floor((sprite.x + sprite.width) / TILE_SIZE);
+      row = Math.floor(sprite.y / TILE_SIZE);
     } else if (sprite.vx < 0) {
-      col = Math.floor((sprite.x - 1) / PLATEAU_WIDTH);
-      row = Math.floor(sprite.y / PLATEAU_HEIGHT);
+      col = Math.floor((sprite.x - 1) / TILE_SIZE);
+      row = Math.floor(sprite.y / TILE_SIZE);
     }else if (sprite.vy < 0) {
-      col = Math.floor(sprite.x / PLATEAU_WIDTH);
-      row = Math.floor((sprite.y - 1) / PLATEAU_HEIGHT);
+      col = Math.floor(sprite.x / TILE_SIZE);
+      row = Math.floor((sprite.y - 1) / TILE_SIZE);
     }
 
     return map[row][col] === '0'

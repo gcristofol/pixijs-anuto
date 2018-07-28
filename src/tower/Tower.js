@@ -2,9 +2,9 @@ const BULLET_SPEED = 10;
 const RANGE = 90
 //let gu = new GameUtilities();
 
-class Tower extends PIXI.Container {
+class BasicTower extends PIXI.Container {
 
-  constructor(col, row, size) {
+  constructor(col, row) {
     super()
    
   
@@ -15,19 +15,19 @@ class Tower extends PIXI.Container {
     this.sprite = new PIXI.Sprite(resources["images/bunny.png"].texture);
     this.rectangle = new PIXI.Graphics();
      
-    var x = col * PLATEAU_WIDTH
-    var y = row * PLATEAU_HEIGHT
+    var x = col * TILE_SIZE
+    var y = row * TILE_SIZE
     
     // move the sprite to the center of the screen
-    this.sprite.position.x = x + PLATEAU_WIDTH/2;
-    this.sprite.position.y = y + PLATEAU_HEIGHT/2;
+    this.sprite.position.x = x + TILE_SIZE/2;
+    this.sprite.position.y = y + TILE_SIZE/2;
     
     this.sprite.scale.x = .9 //TODO remove when there are proper textures
     this.sprite.scale.y = .7
 
     
     this.rectangle.beginFill(0x66CCFF);
-    this.rectangle.drawRect(x, y, PLATEAU_WIDTH, PLATEAU_HEIGHT);
+    this.rectangle.drawRect(x, y, TILE_SIZE, TILE_SIZE);
     this.rectangle.endFill();
     
  
@@ -62,7 +62,7 @@ class Tower extends PIXI.Container {
 
         //if it touches the enemy it goes away
         var c = this.distance(this.bullets[b].position, enemy.position)
-        if (c < PLATEAU_WIDTH){
+        if (c < TILE_SIZE){
           console.log("Make damage to enemy ");
           //remove bullet
           console.log("Remove carrot ", b);
@@ -98,4 +98,63 @@ class Tower extends PIXI.Container {
     
     return Math.sqrt( a*a + b*b );
   }
+}
+
+class AnimatedTower extends BasicTower {
+  constructor(col, row) {
+    super()
+   
+  
+    this.bullets = [];
+    this.ammo = 3;
+
+  let alienImages = ["images/bunny01.png","images/bunny02.png","images/bunny03.png","images/bunny04.png"];
+let textureArray = [];
+
+for (let i=0; i < 4; i++)
+{
+     let texture = PIXI.Texture.fromImage(alienImages[i]);
+     textureArray.push(texture);
+}
+
+//let mc = new PIXI.AnimatedSprite(textureArray);
+this.sprite = new PIXI.extras.MovieClip(textureArray);
+
+this.sprite.animationSpeed = 0.5;
+ this.sprite.loop = true;
+ this.sprite.play();
+
+    //this.sprite = new PIXI.Sprite(resources["images/bunny.png"].texture);
+    this.rectangle = new PIXI.Graphics();
+     
+    var x = col * TILE_SIZE
+    var y = row * TILE_SIZE
+    
+    // move the sprite to the center of the screen
+    this.sprite.position.x = x + TILE_SIZE/2;
+    this.sprite.position.y = y + TILE_SIZE/2;
+    
+    this.sprite.scale.x = .9 //TODO remove when there are proper textures
+    this.sprite.scale.y = .7
+
+    
+    this.rectangle.beginFill(0x66CCFF);
+    this.rectangle.drawRect(x, y, TILE_SIZE, TILE_SIZE);
+    this.rectangle.endFill();
+    
+ 
+    this.addChild(this.rectangle)
+    this.addChild(this.sprite)
+
+    this.sprite.anchor.x = 0.5;
+    this.sprite.anchor.y = 0.5;
+ 
+  }
+  
+   shoot(rotation, startPosition){
+     if (this.ammo > 0 ){
+       console.log("Animaton");
+      super.shoot(rotation, startPosition)
+     }
+   }
 }

@@ -77,8 +77,8 @@ function setup() {
   plateau = new Sprite(resources["images/plateau.png"].texture);
   plateau.x = 0;
   plateau.y = 0;
-  plateau.width = PLATEAU_WIDTH;
-  plateau.height = PLATEAU_HEIGHT;
+  plateau.width  = TILE_SIZE;
+  plateau.height = TILE_SIZE;
     
   //TODO move to map class
   var x,y = 0;
