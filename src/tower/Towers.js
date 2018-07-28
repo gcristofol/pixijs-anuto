@@ -5,7 +5,7 @@ class Towers {
   constructor(waveScene) {
     this.towers = [];
     this.towers.push(new BasicTower(2, 6));
-    this.towers.push(new AnimatedTower(4, 8));
+    //this.towers.push(new AnimatedTower(4, 8));
     for(var i=0; i < this.towers.length; i++){
       waveScene.addChild(this.towers[i]);
     }

@@ -1,5 +1,5 @@
 
-const TILE_SIZE  = 25;
+const TILE_SIZE  = 32;
 
 
 const map =
