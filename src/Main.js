@@ -104,18 +104,27 @@ function setupTiles()
   //plateau.height = TILE_SIZE;
     
   var x,y = 0;
+  var loadtexture = "";
   for (var row = 0; row < map.length; row++) {
     for (var col = 0; col < map[row].length; col++) {
-      if (map[row][col] === '0'){
+      switch (map[row][col]){
+        default:
+          console.log("I'm here");
+          loadtexture = "images/towerDefense_tile029.png"; //does not work!
+          break;
+        case "0":
+          loadtexture = "images/towerDefense_tile024.png";
+          break;
+      }
         y = TILE_SIZE * row
         x = TILE_SIZE  * col
-        let sprite =  new PIXI.Sprite(PIXI.utils.TextureCache["images/towerDefense_tile024.png"]);
+        let sprite =  new PIXI.Sprite(PIXI.utils.TextureCache[loadtexture]);
         sprite.x = x
         sprite.y = y
         sprite.scale.x = .5 
         sprite.scale.y = .5
         gameScene.addChild(sprite);
-      }
+      
     }
   }
   
