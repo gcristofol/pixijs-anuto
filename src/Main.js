@@ -9,8 +9,6 @@ let Application = PIXI.Application,
 
 //Create a Pixi Application
 let app = new Application({
-    width: 256,
-    height: 256,
     antialiasing: true,
     transparent: false,
     resolution: 1
@@ -21,19 +19,16 @@ app.renderer.view.style.position = "absolute";
 app.renderer.view.style.display = "block";
 app.renderer.autoResize = true;
 app.renderer = PIXI.autoDetectRenderer(
-		window.innerWidth,
-		window.innerHeight,
-		{view:document.getElementById("game-canvas")}
+		{
+      view:document.getElementById("game-canvas")
+    }
 	);
 
 
 loader
-  .add(["images/background.png", "images/towerDefense_tile206.png", "images/towerDefense_tile180.png", "images/cat.png", "images/towerDefense_tile251.png", "images/towerDefense_tile024.png"])
+  .add(["images/background.png", "images/towerDefense_tile206.png", "images/towerDefense_tile180.png", "images/cat.png", "images/towerDefense_tile251.png", "images/towerDefense_tile024.png", "images/towerDefense_tile034.png"])
   .on("progress", loadProgressHandler)
   .load(setup);
-
-//Define any variables that are used in more than one function
-//let cat, state;
 
 function loadProgressHandler(loader, resource) {
   //Display the file `url` currently being loaded
@@ -45,7 +40,6 @@ function loadProgressHandler(loader, resource) {
 
 //Define any variables that are used in more than one function
 let wave, state;
-
 
 function setup() {
   console.log("All files loaded");
@@ -59,6 +53,7 @@ function setup() {
   //Create the `gameScene` group
   gameScene = new Container();
   app.stage.addChild(gameScene);
+  gameScene.visible = true
   
   waveScene = new Container();
   app.stage.addChild(waveScene);
@@ -66,6 +61,9 @@ function setup() {
   gameOverScene = new Container();
   app.stage.addChild(gameOverScene);
   gameOverScene.visible = false;
+
+  //Draw map: design pourposes only
+  //drawMap()
 
   //Setup Map Background
   background = new Sprite(resources["images/background.png"].texture);
@@ -89,7 +87,6 @@ function setup() {
  
   //Start the game loop
   app.ticker.add(delta => gameLoop(delta));
-  
 }
 
 function setupTiles()
@@ -98,41 +95,12 @@ function setupTiles()
     for (var col = 0; col < map[row].length; col++) {
       if (map[row][col] === '0')
       {
-        //let sprite =  new PIXI.Sprite(PIXI.utils.TextureCache["images/towerDefense_tile024.png"]);
-        let container = new PIXI.Container()
-        container.x = TILE_SIZE  * col
-        container.y = TILE_SIZE * row
-        //container.scale.x = .5
-        //container.scale.y = .5
-   
-        
-        var rect = new PIXI.Graphics();
-        //circle.lineStyle(5, 0xFFFFFF, 1);
-        //rect.lineStyle(1, 0xFFFFFF, 3);
-        rect.beginFill(0x33cc33);
-        rect.drawRect(0, 0, TILE_SIZE, TILE_SIZE);
-        rect.alpha = 0.5;
-        rect.beginFill(0x0000FF, 1);
-        //circle.drawCircle(0, 0, TILE_SIZE);
-        rect.endFill();
-        rect.interactive = true;
-        rect.hitArea = new PIXI.Circle(0, 0, TILE_SIZE - 2 );
-
-        rect.mouseover = onMouseover;
-        
-        
-        container.addChild(rect);
-        gameScene.addChild(container);
+        var tile = new Tile(col, row)
+        gameScene.addChild(tile);
       }
     }
   }
-  
 }
-
-function onMouseover (mouseData) {
-  console.log('mouseover')
-}
-
 
 function gameLoop(delta){
 
@@ -160,4 +128,40 @@ function nextWave() {
   
   //set the game state to `play`
   //state = wave;
+}
+
+
+class Tile extends PIXI.Container {
+
+  constructor(col, row) {
+    super()
+    this.x = TILE_SIZE * col
+    this.y = TILE_SIZE * row
+    
+    var rect = new PIXI.Graphics();
+    rect.beginFill(0xFFFFFF);
+    rect.drawRect(0, 0, TILE_SIZE, TILE_SIZE);
+    rect.endFill();
+    rect.alpha = 0;
+    rect.interactive = true;
+    rect.hitArea = new PIXI.Rectangle(0, 0, TILE_SIZE, TILE_SIZE);
+    rect.on('mousedown', onMousedown)
+    rect.on('mouseover', onMouseover)
+    rect.on('mouseout', onMouseout)
+    this.addChild(rect);
+  }
+}
+
+function onMousedown (event) {
+  //TODO Clavar tower seleccionada en el formulari de arriba
+  console.log('mousedown tile', this)
+}
+
+function onMouseover(mouseData) {
+  this.alpha = 0.3;
+}
+
+// make circle half-transparent when mouse leaves
+function onMouseout(mouseData) {
+  this.alpha = 0;
 }
