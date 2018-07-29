@@ -9,8 +9,6 @@ let Application = PIXI.Application,
 
 //Create a Pixi Application
 let app = new Application({
-    width: 256,
-    height: 256,
     antialiasing: true,
     transparent: false,
     resolution: 1
@@ -21,19 +19,16 @@ app.renderer.view.style.position = "absolute";
 app.renderer.view.style.display = "block";
 app.renderer.autoResize = true;
 app.renderer = PIXI.autoDetectRenderer(
-		window.innerWidth,
-		window.innerHeight,
-		{view:document.getElementById("game-canvas")}
+		{
+      view:document.getElementById("game-canvas")
+    }
 	);
 
 
 loader
-  .add(["images/background.png", "images/towerDefense_tile206.png", "images/towerDefense_tile180.png", "images/cat.png", "images/towerDefense_tile251.png", "images/towerDefense_tile024.png"])
+  .add(["images/background.png", "images/towerDefense_tile206.png", "images/towerDefense_tile180.png", "images/cat.png", "images/towerDefense_tile251.png", "images/towerDefense_tile024.png", "images/towerDefense_tile034.png"])
   .on("progress", loadProgressHandler)
   .load(setup);
-
-//Define any variables that are used in more than one function
-//let cat, state;
 
 function loadProgressHandler(loader, resource) {
   //Display the file `url` currently being loaded
@@ -46,19 +41,19 @@ function loadProgressHandler(loader, resource) {
 //Define any variables that are used in more than one function
 let wave, state;
 
-
 function setup() {
   console.log("All files loaded");
   
   //TODO add interaction plugin
-  app.stage.interactive = true;
-  app.stage.on("mousedown", function(e){
-    console.log("mousedown", e);
-  })
+  //app.stage.interactive = true;
+  //app.stage.on("mousedown", function(e){
+  //  console.log("mousedown", e);
+  //})
 
   //Create the `gameScene` group
   gameScene = new Container();
   app.stage.addChild(gameScene);
+  gameScene.visible = true
   
   waveScene = new Container();
   app.stage.addChild(waveScene);
@@ -67,9 +62,12 @@ function setup() {
   app.stage.addChild(gameOverScene);
   gameOverScene.visible = false;
 
+  //Draw map: design pourposes only
+  //drawMap()
+
   //Setup Map Background
   background = new Sprite(resources["images/background.png"].texture);
-  background.scale.x = .5 
+  background.scale.x = .5
   background.scale.y = .5
   gameScene.addChild(background);
   setupTiles()
@@ -89,47 +87,20 @@ function setup() {
  
   //Start the game loop
   app.ticker.add(delta => gameLoop(delta));
-  
 }
 
 function setupTiles()
 {
-  //let plateauTexture = PIXI.utils.TextureCache["images/towerDefense_tile055.png"];
-  //let backgrdTexture = PIXI.utils.TextureCache["images/towerDefense_tile024.png"];
-
-  //plateau = new Sprite(backgrdTexture);
-  //plateau.x = 0;
-  //plateau.y = 0;
-  //plateau.width  = TILE_SIZE;
-  //plateau.height = TILE_SIZE;
-    
-  var x,y = 0;
-  var loadtexture = "";
   for (var row = 0; row < map.length; row++) {
     for (var col = 0; col < map[row].length; col++) {
-      switch (map[row][col]){
-        default:
-          console.log("I'm here");
-          loadtexture = "images/towerDefense_tile029.png"; //does not work!
-          break;
-        case "0":
-          loadtexture = "images/towerDefense_tile024.png";
-          break;
+      if (map[row][col] === '0')
+      {
+        var tile = new Tile(col, row)
+        gameScene.addChild(tile);
       }
-        y = TILE_SIZE * row
-        x = TILE_SIZE  * col
-        let sprite =  new PIXI.Sprite(PIXI.utils.TextureCache[loadtexture]);
-        sprite.x = x
-        sprite.y = y
-        sprite.scale.x = .5 
-        sprite.scale.y = .5
-        gameScene.addChild(sprite);
-      
     }
   }
-  
 }
-
 
 function gameLoop(delta){
 
@@ -157,4 +128,40 @@ function nextWave() {
   
   //set the game state to `play`
   //state = wave;
+}
+
+
+class Tile extends PIXI.Container {
+
+  constructor(col, row) {
+    super()
+    this.x = TILE_SIZE * col
+    this.y = TILE_SIZE * row
+    
+    var rect = new PIXI.Graphics();
+    rect.beginFill(0xFFFFFF);
+    rect.drawRect(0, 0, TILE_SIZE, TILE_SIZE);
+    rect.endFill();
+    rect.alpha = 0;
+    rect.interactive = true;
+    rect.hitArea = new PIXI.Rectangle(0, 0, TILE_SIZE, TILE_SIZE);
+    rect.on('mousedown', onMousedown)
+    rect.on('mouseover', onMouseover)
+    rect.on('mouseout', onMouseout)
+    this.addChild(rect);
+  }
+}
+
+function onMousedown (event) {
+  //TODO Clavar tower seleccionada en el formulari de arriba
+  console.log('mousedown tile', this)
+}
+
+function onMouseover(mouseData) {
+  this.alpha = 0.3;
+}
+
+// make circle half-transparent when mouse leaves
+function onMouseout(mouseData) {
+  this.alpha = 0;
 }

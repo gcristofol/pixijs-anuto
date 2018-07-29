@@ -23,9 +23,10 @@ class BasicTower extends PIXI.Container {
     this.gun.scale.x = .65
     this.gun.scale.y = .65
 
-    this.rectangle.beginFill(0x33cc33);
+    this.rectangle.lineStyle(1, 0xFFFFFF, 3);
+    //this.rectangle.beginFill(0x33cc33);
     this.rectangle.drawRect(x, y, TILE_SIZE, TILE_SIZE);
-    this.rectangle.endFill();
+    //this.rectangle.endFill();
 
     this.addChild(this.rectangle)
     this.addChild(this.gun)
@@ -48,7 +49,7 @@ class BasicTower extends PIXI.Container {
     var dist = this.distance(this.gun.position, enemy.position);
     //console.log("Enemy at range ", dist);
     if (dist < RANGE) {
-      //console.log("Enemy in range ", dist);
+      //TODO the bulles should come out the middle
       this.shoot(this.gun.rotation, this.gun.position)
     }
 
@@ -135,10 +136,5 @@ class AnimatedTower extends BasicTower {
 
   }
 
-  shoot(rotation, startPosition) {
-    if (this.ammo > 0) {
-      console.log("Animaton");
-      super.shoot(rotation, startPosition)
-    }
-  }
+
 }
