@@ -109,9 +109,10 @@ class Enemy extends PIXI.Container{
     childSprite.position.y = 5
 
     var rectangle = new PIXI.Graphics();
-    rectangle.beginFill(0x89a4a6);
+    rectangle.lineStyle(1, 0xFF5733, 3);
+    //rectangle.beginFill(0x89a4a6);
     rectangle.drawRect(0, 0, TILE_SIZE, TILE_SIZE);
-    rectangle.endFill();
+    //rectangle.endFill();
     
  
     this.addChild(rectangle)

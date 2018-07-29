@@ -51,10 +51,10 @@ function setup() {
   console.log("All files loaded");
   
   //TODO add interaction plugin
-  app.stage.interactive = true;
-  app.stage.on("mousedown", function(e){
-    console.log("mousedown", e);
-  })
+  //app.stage.interactive = true;
+  //app.stage.on("mousedown", function(e){
+  //  console.log("mousedown", e);
+  //})
 
   //Create the `gameScene` group
   gameScene = new Container();
@@ -69,7 +69,7 @@ function setup() {
 
   //Setup Map Background
   background = new Sprite(resources["images/background.png"].texture);
-  background.scale.x = .5 
+  background.scale.x = .5
   background.scale.y = .5
   gameScene.addChild(background);
   setupTiles()
@@ -94,40 +94,43 @@ function setup() {
 
 function setupTiles()
 {
-  //let plateauTexture = PIXI.utils.TextureCache["images/towerDefense_tile055.png"];
-  //let backgrdTexture = PIXI.utils.TextureCache["images/towerDefense_tile024.png"];
-
-  //plateau = new Sprite(backgrdTexture);
-  //plateau.x = 0;
-  //plateau.y = 0;
-  //plateau.width  = TILE_SIZE;
-  //plateau.height = TILE_SIZE;
-    
-  var x,y = 0;
-  var loadtexture = "";
   for (var row = 0; row < map.length; row++) {
     for (var col = 0; col < map[row].length; col++) {
-      switch (map[row][col]){
-        default:
-          console.log("I'm here");
-          loadtexture = "images/towerDefense_tile029.png"; //does not work!
-          break;
-        case "0":
-          loadtexture = "images/towerDefense_tile024.png";
-          break;
+      if (map[row][col] === '0')
+      {
+        //let sprite =  new PIXI.Sprite(PIXI.utils.TextureCache["images/towerDefense_tile024.png"]);
+        let container = new PIXI.Container()
+        container.x = TILE_SIZE  * col
+        container.y = TILE_SIZE * row
+        //container.scale.x = .5
+        //container.scale.y = .5
+   
+        
+        var rect = new PIXI.Graphics();
+        //circle.lineStyle(5, 0xFFFFFF, 1);
+        //rect.lineStyle(1, 0xFFFFFF, 3);
+        rect.beginFill(0x33cc33);
+        rect.drawRect(0, 0, TILE_SIZE, TILE_SIZE);
+        rect.alpha = 0.5;
+        rect.beginFill(0x0000FF, 1);
+        //circle.drawCircle(0, 0, TILE_SIZE);
+        rect.endFill();
+        rect.interactive = true;
+        rect.hitArea = new PIXI.Circle(0, 0, TILE_SIZE - 2 );
+
+        rect.mouseover = onMouseover;
+        
+        
+        container.addChild(rect);
+        gameScene.addChild(container);
       }
-        y = TILE_SIZE * row
-        x = TILE_SIZE  * col
-        let sprite =  new PIXI.Sprite(PIXI.utils.TextureCache[loadtexture]);
-        sprite.x = x
-        sprite.y = y
-        sprite.scale.x = .5 
-        sprite.scale.y = .5
-        gameScene.addChild(sprite);
-      
     }
   }
   
+}
+
+function onMouseover (mouseData) {
+  console.log('mouseover')
 }
 
 
