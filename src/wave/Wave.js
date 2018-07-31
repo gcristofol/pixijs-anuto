@@ -39,7 +39,7 @@ class Wave {
 
     if (typeof map[row] != 'undefined' && typeof map[row][col] != 'undefined' && map[row][col]==='F'){
       console.log("enemy reaches the end"); 
-      //TODO remove enemy update lives...
+      //TODO remove enemy from wave, update lives, etc
       this.enemy.visible = false
       this.enemy = null
     }

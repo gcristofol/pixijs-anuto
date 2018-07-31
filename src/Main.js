@@ -15,11 +15,13 @@ let app = new Application({
   }
 );
 
-app.renderer.view.style.position = "absolute";
-app.renderer.view.style.display = "block";
-app.renderer.autoResize = true;
+//app.renderer.view.style.position = "absolute";
+//app.renderer.view.style.display = "block";
+//app.renderer.autoResize = true;
 app.renderer = PIXI.autoDetectRenderer(
-		{
+      320,
+      500,
+      {
       view:document.getElementById("game-canvas")
     }
 	);
