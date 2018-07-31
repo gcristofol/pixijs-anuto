@@ -15,11 +15,13 @@ let app = new Application({
   }
 );
 
-app.renderer.view.style.position = "absolute";
-app.renderer.view.style.display = "block";
-app.renderer.autoResize = true;
+//app.renderer.view.style.position = "absolute";
+//app.renderer.view.style.display = "block";
+//app.renderer.autoResize = true;
 app.renderer = PIXI.autoDetectRenderer(
-		{
+      320,
+      500,
+      {
       view:document.getElementById("game-canvas")
     }
 	);
@@ -39,7 +41,9 @@ function loadProgressHandler(loader, resource) {
 }
 
 //Define any variables that are used in more than one function
-let wave, state;
+let waveNum = 0;
+let state, tiles;
+
 
 function setup() {
   console.log("All files loaded");
@@ -77,13 +81,13 @@ function setup() {
   //TODO Add some text for the game over message
   //TODO Create a `gameOverScene` group
   //TODO Assign the player's keyboard controllers
-  wave = new Wave(waveScene, 1);
-  
+
+  //TODO setup towers via mouse interaction
   //tower = new Tower();
   towers = new Towers(waveScene);
 
-  //set the game state to `waveLoop`
-  state = waveLoop;
+  //set the game state to `idleLoop` click next for `waveLoop`
+  state = idleLoop;
  
   //Start the game loop
   app.ticker.add(delta => gameLoop(delta));
@@ -91,43 +95,51 @@ function setup() {
 
 function setupTiles()
 {
+  tiles = new Container();
   for (var row = 0; row < map.length; row++) {
     for (var col = 0; col < map[row].length; col++) {
       if (map[row][col] === '0')
       {
         var tile = new Tile(col, row)
-        gameScene.addChild(tile);
+        tiles.addChild(tile);
       }
     }
+    gameScene.addChild(tiles);
   }
 }
 
 function gameLoop(delta){
-
   //Update the current game state:
   state(delta);
 }
 
+function idleLoop(delta) {
+  //Don't Move the wave
+  //Just interactive upgrade towers
+}
+
 function waveLoop(delta) {
   //Move the wave
-  wave.move(map)
+  wave.move(map, tiles)
+  //Let the towers attack the enemy
   towers.attack(wave)
 }
 
-
 function endLoop() {
   //All the code that should run at the end of the game
-  
+  //game over
 }
 
 //Function called from javascript form
-function nextWave() {
-  console.log("Next Wave");
-  //setup the wave
+function nextWaveClick() {
+  waveNum++
+  console.log("Next Wave", waveNum);
   
+  //setup the wave
+  wave = new Wave(waveScene, waveNum);
   
   //set the game state to `play`
-  //state = wave;
+  state = waveLoop;
 }
 
 

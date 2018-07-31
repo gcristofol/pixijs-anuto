@@ -63,12 +63,12 @@ class BasicTower extends PIXI.Container {
       if (c < TILE_SIZE) {
         console.log("Make damage to enemy ");
         //remove bullet
-        console.log("Remove carrot ", b);
+        console.log("Remove bullet ", b);
         this.bullets[b].visible = false
         this.removeChild(this.bullets[b]);
         var index = this.bullets.indexOf(this.bullets[b]);
         this.bullets.splice(index, 1);
-        console.log("carrots on screen ", this.bullets.length);
+        console.log("bullets on screen ", this.bullets.length);
       }
     }
   }
@@ -77,7 +77,7 @@ class BasicTower extends PIXI.Container {
   shoot(rotation, startPosition) {
     if (this.ammo > 0) {
       console.log("Ammo", this.ammo);
-      console.log("Shoot carrot!");
+      console.log("Shoot bullet!");
       var bullet = new PIXI.Sprite(resources["images/towerDefense_tile251.png"].texture);
       bullet.position.x = startPosition.x;
       bullet.position.y = startPosition.y;
