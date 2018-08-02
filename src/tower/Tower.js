@@ -1,14 +1,18 @@
-const BULLET_SPEED = 10;
+const BULLET_SPEED = 6;
 const RANGE = 85
-let gu = new GameUtilities();
+// Time that passes between shots
+const FIRE_INTERVAL = 100;
+
+//let gu = new GameUtilities();
 
 class BasicTower extends PIXI.Container {
 
-  constructor(col, row) {
+  constructor(gameScene, col, row) {
     super()
-
+    gameScene.addChild(this)
     this.bullets = [];
     this.ammo = 2;
+    this._timeLastBulletFired = null
 
     this.gun = new PIXI.Sprite(resources["images/towerDefense_tile206.png"].texture);
     this.rectangle = new PIXI.Graphics();
@@ -24,10 +28,8 @@ class BasicTower extends PIXI.Container {
     this.gun.scale.y = .65
 
     this.rectangle.lineStyle(1, 0xFFFFFF, 3);
-    //this.rectangle.beginFill(0x33cc33);
     this.rectangle.drawRect(x, y, TILE_SIZE, TILE_SIZE);
-    //this.rectangle.endFill();
-
+    
     this.addChild(this.rectangle)
     this.addChild(this.gun)
 
@@ -36,21 +38,19 @@ class BasicTower extends PIXI.Container {
   }
 
   attack(enemy) {
+    var currentTime = performance.now()
+    
     // aim: rotate mr tower a little
     var dist_Y = enemy.position.y - this.gun.position.y;
     var dist_X = enemy.position.x - this.gun.position.x;
     var angle = Math.atan2(dist_Y, dist_X);
-    //var degrees = angle * 180 / Math.PI;
-    //console.log("Rotate angle to aim enemy ", degrees);
     this.gun.rotation = angle
 
     // calculate distance
-    //var dist = Math.sqrt( dist_Y*dist_Y + dist_X*dist_X );
     var dist = this.distance(this.gun.position, enemy.position);
-    //console.log("Enemy at range ", dist);
+    //console.log("Enemy in range ", dist);
     if (dist < RANGE) {
-      //TODO the bulles should come out the middle
-      this.shoot(this.gun.rotation, this.gun.position)
+      this.shoot(currentTime)
     }
 
     //move the bullets on the array
@@ -59,9 +59,7 @@ class BasicTower extends PIXI.Container {
       this.bullets[b].position.y += Math.sin(this.bullets[b].rotation) * BULLET_SPEED;
 
       //if it touches the enemy it goes away
-      var c = this.distance(this.bullets[b].position, enemy.position)
-      if (c < TILE_SIZE) {
-        console.log("Make damage to enemy ");
+      if (enemy.checkHit(this.bullets[b])) {
         //remove bullet
         console.log("Remove bullet ", b);
         this.bullets[b].visible = false
@@ -74,16 +72,23 @@ class BasicTower extends PIXI.Container {
   }
 
 
-  shoot(rotation, startPosition) {
+  shoot(currentTime) {
     if (this.ammo > 0) {
       console.log("Ammo", this.ammo);
       console.log("Shoot bullet!");
+      var alpha = this.gun.rotation;
+			var x = this.gun.position.x + Math.sin( alpha ) * TILE_SIZE/2;
+			var y = this.gun.position.y - Math.cos( alpha ) * TILE_SIZE/2;
+
       var bullet = new PIXI.Sprite(resources["images/towerDefense_tile251.png"].texture);
-      bullet.position.x = startPosition.x;
-      bullet.position.y = startPosition.y;
-      bullet.rotation = rotation;
-      this.addChild(bullet);
+      bullet.position.x = x;
+		  bullet.position.y = y;
+		  bullet.rotation = alpha;
+			this.addChild(bullet);
       this.bullets.push(bullet);
+      
+			this._timeLastBulletFired = currentTime;
+
       this.ammo -= 1
     }
   }

@@ -2,21 +2,21 @@
 class Towers {
 
   //TODO Use an array of towers
-  constructor(waveScene) {
+  constructor(gameScene) {
     this.towers = [];
-    this.towers.push(new BasicTower(2, 6));
+    this.towers.push(new BasicTower(gameScene, 2, 6));
     //this.towers.push(new AnimatedTower(4, 8));
-    for(var i=0; i < this.towers.length; i++){
-      waveScene.addChild(this.towers[i]);
-    }
+    
   }
 
   attack(wave) {
     //TODO find enemy accoding to strategy: first, weakest, etc...
+    if (!wave.isEmpty()){
     
-    //Make the towers aim and shoot the enemy
-    for(var i=0; i < this.towers.length; i++){
-      this.towers[i].attack(wave.head())
+      //Make the towers aim and shoot the enemy
+      this.towers.forEach((tower) => {
+        tower.attack(wave.head())
+      })
     }
   }
 

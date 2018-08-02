@@ -47,21 +47,12 @@ let state, tiles;
 
 function setup() {
   console.log("All files loaded");
-  
-  //TODO add interaction plugin
-  //app.stage.interactive = true;
-  //app.stage.on("mousedown", function(e){
-  //  console.log("mousedown", e);
-  //})
 
   //Create the `gameScene` group
   gameScene = new Container();
   app.stage.addChild(gameScene);
   gameScene.visible = true
-  
-  waveScene = new Container();
-  app.stage.addChild(waveScene);
-  
+
   gameOverScene = new Container();
   app.stage.addChild(gameOverScene);
   gameOverScene.visible = false;
@@ -75,16 +66,9 @@ function setup() {
   background.scale.y = .5
   gameScene.addChild(background);
   setupTiles()
-  
-  //TODO Make the enemies
-  //TODO Create the health bar
-  //TODO Add some text for the game over message
-  //TODO Create a `gameOverScene` group
-  //TODO Assign the player's keyboard controllers
-
+ 
   //TODO setup towers via mouse interaction
-  //tower = new Tower();
-  towers = new Towers(waveScene);
+  towers = new Towers(gameScene);
 
   //set the game state to `idleLoop` click next for `waveLoop`
   state = idleLoop;
@@ -120,9 +104,13 @@ function idleLoop(delta) {
 
 function waveLoop(delta) {
   //Move the wave
-  wave.move(map, tiles)
+  wave.move(map)
+  wave.cleanup()
+  
   //Let the towers attack the enemy
   towers.attack(wave)
+  //wave.cleanup()
+  
 }
 
 function endLoop() {
@@ -136,7 +124,7 @@ function nextWaveClick() {
   console.log("Next Wave", waveNum);
   
   //setup the wave
-  wave = new Wave(waveScene, waveNum);
+  wave = new Wave(gameScene, waveNum);
   
   //set the game state to `play`
   state = waveLoop;

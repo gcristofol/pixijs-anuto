@@ -1,6 +1,9 @@
 
 const TILE_SIZE  = 32;
 
+const STARTING_X = TILE_SIZE * 2 + 1
+const STARTING_Y = 0 + 1
+
 
 const map =
 [
@@ -22,6 +25,11 @@ const map =
 	['0', 'F', '0', '0', '0', '0', '0', '0', '0', '0'],
 	['0', 'F', '0', '0', '0', '0', '0', '0', '0', '0'],
 ];
+
+//TODO return the col,row on the map for a particular point
+function coordinatesToCell(pos1){
+  return null;
+}
 
 //This function draws the entire map
 //Used during design time to scaffold the scenarios
