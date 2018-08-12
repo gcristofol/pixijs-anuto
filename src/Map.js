@@ -39,9 +39,9 @@ function drawMap()
   for (var row = 0; row < map.length; row++) {
     for (var col = 0; col < map[row].length; col++) {
       if (map[row][col] === '0'){
-         sprite =  new PIXI.Sprite(PIXI.utils.TextureCache["images/towerDefense_tile024.png"]);
+         sprite =  new PIXI.Sprite(PIXI.utils.TextureCache["images/green_tile.png"]);
       }else{
-         sprite =  new PIXI.Sprite(PIXI.utils.TextureCache["images/towerDefense_tile034.png"]);
+         sprite =  new PIXI.Sprite(PIXI.utils.TextureCache["images/asfalt_tile.png"]);
       }
       sprite.x = TILE_SIZE * col
       sprite.y = TILE_SIZE * row

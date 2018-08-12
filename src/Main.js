@@ -27,10 +27,9 @@ app.renderer = PIXI.autoDetectRenderer(
 	);
 
 
-loader
-  .add(["images/background.png", "images/towerDefense_tile206.png", "images/towerDefense_tile180.png", "images/cat.png", "images/towerDefense_tile251.png", "images/towerDefense_tile024.png", "images/towerDefense_tile034.png"])
-  .on("progress", loadProgressHandler)
-  .load(setup);
+loader.add(["images/background.png", "images/missile_tower.png", "images/tower_base.png", "images/cat.png", "images/bullet.png", "images/green_tile.png", "images/asfalt_tile.png"])
+loader.on("progress", loadProgressHandler)
+loader.load(setup);
 
 function loadProgressHandler(loader, resource) {
   //Display the file `url` currently being loaded
@@ -103,13 +102,14 @@ function idleLoop(delta) {
 }
 
 function waveLoop(delta) {
+  var currentTime = performance.now()
   //Move the wave
-  wave.move(map)
-  wave.cleanup()
+  wave.move(map, currentTime)
   
   //Let the towers attack the enemy
-  towers.attack(wave)
-  //wave.cleanup()
+  towers.attack(wave, currentTime)
+  
+  wave.cleanup(currentTime)
   
 }
 

@@ -1,13 +1,18 @@
-const ENEMY_VELOCITY = 1;
+const ENEMY_VELOCITY = 3;
 
 // Amount of hits a ship can take before it explodes
-const MAX_HEALTH = 10;
+const MAX_DAMAGE = 3;
+const INDICATOR_LINE_THICKNESS = 3
 
+const DEAD_HIGHLIGHT_DURATION = 140;
+const TINT = 0xFF6600;
 
 const ENUM_STATUS_ALIVE = 0,
-      ENUM_STATUS_DEAD  = 1,
-      ENUM_STATUS_OUT_OF_BOUNDS = 2;
+      ENUM_STATUS_DYING  = 1,
+      ENUM_STATUS_DEAD  = 2,
+      ENUM_STATUS_OUT_OF_BOUNDS = 3;
       
+
 
 class Enemy extends PIXI.Container {
     
@@ -20,9 +25,9 @@ class Enemy extends PIXI.Container {
     this.vx = 0
     
     this.state = ENUM_STATUS_ALIVE;
-    this._health = MAX_HEALTH
-    
+    this._damage = 0
     this._hitHighlightStart = null;
+    
 
     this.position.x = STARTING_X
     this.position.y = STARTING_Y
@@ -34,12 +39,11 @@ class Enemy extends PIXI.Container {
     this._body.position.x = 5
     this._body.position.y = 5
 
-//this.hitArea = new PIXI.Rectangle(0, 0, TILE_SIZE, TILE_SIZE);
-    var rectangle = new PIXI.Graphics();
-    rectangle.lineStyle(1, 0xFF5733, 3);
-    rectangle.drawRect(0, 0, TILE_SIZE, TILE_SIZE);
+    this._healthIndicator = new PIXI.Graphics();
+    this._healthIndicator.lineStyle(INDICATOR_LINE_THICKNESS, 0x8000);
+    this._healthIndicator.drawRect(0, 0, TILE_SIZE, 1);
 
-    this.addChild(rectangle)
+    this.addChild(this._healthIndicator)
     this.addChild(this._body)
   }
     
@@ -57,11 +61,10 @@ class Enemy extends PIXI.Container {
 
     if (typeof map[row] != 'undefined' && typeof map[row][col] != 'undefined' && map[row][col]==='F')
     {
-      console.log("enemy reaches the end");
+      console.log("Enemy reaches the end");
       //TODO remove enemy from wave, update lives, etc
       this.visible = false
       this.state = ENUM_STATUS_OUT_OF_BOUNDS;
-      
     }
     else if (this.isContained(map)) {
       //console.log("enemy hits a wall");
@@ -130,73 +133,39 @@ class Enemy extends PIXI.Container {
 	 * @public
 	 * @returns {Boolean} wasHit
 	 */
-  checkHit(bullet){
+  checkHit(bullet, currentTime){
     //console.log("check hit ", bulletPosition, this.position);
     if( hitTestRectangle(this, bullet ) ) {
-      console.log("Take damage to enemy ");
-   
-			// Ok, we're hit. Flash red
-			this._hitHighlightStart = performance.now();
 			
-			// Remove decrement health by 1
-			this._health--;
+      // Remove decrement health by 1
+      console.log("Hit by bullet: Take damage");
+      this._damage++;
+      
+      if (this._damage >= MAX_DAMAGE){
+        this._damage = MAX_DAMAGE
+        this.state = ENUM_STATUS_DYING;        
+        // Ok, we're dead. Flash red
+        this._hitHighlightStart = currentTime;
+        this._body.tint = TINT;
+      }
+
+      //refresh health indicator; add damage
+      this._healthIndicator.lineStyle(INDICATOR_LINE_THICKNESS, 0xFF0000);
+      this._healthIndicator.drawRect(0, 0, TILE_SIZE * ( this._damage / MAX_DAMAGE ), 1);
+
 			return true
     }
     return false
   }
+
+  cleanup(currentTime){
+      if( this._hitHighlightStart && currentTime > this._hitHighlightStart + DEAD_HIGHLIGHT_DURATION ) {
+        console.log("Enemy fades away")
+        this._hitHighlightStart = null;
+        this.visible = false
+        this.state = ENUM_STATUS_DEAD;
+        gameScene.removeChild(this);
+      }
+  }
 }
 
-function hitTestRectangle(r1, r2) {
-    // taken form tutorlal
-    // https://github.com/kittykatattack/learningPixi#the-hittestrectangle-function
-
-  //Define the variables we'll need to calculate
-  var hit, combinedHalfWidths, combinedHalfHeights, vx, vy;
-
-  //hit will determine whether there's a collision
-  hit = false;
-  var pos1 = r1.getGlobalPosition();
-  var pos2 = r2.getGlobalPosition();
-
-  //Find the center points of each sprite
-  r1.centerX = pos1.x + r1.width / 2;
-  r1.centerY = pos1.y + r1.height / 2;
-  r2.centerX = pos2.x + r2.width / 2;
-  r2.centerY = pos2.y + r2.height / 2;
-
-  //Find the half-widths and half-heights of each sprite
-  r1.halfWidth = r1.width / 2;
-  r1.halfHeight = r1.height / 2;
-  r2.halfWidth = r2.width / 2;
-  r2.halfHeight = r2.height / 2;
-
-  //Calculate the distance vector between the sprites
-  vx = r1.centerX - r2.centerX;
-  vy = r1.centerY - r2.centerY;
-
-  //Figure out the combined half-widths and half-heights
-  combinedHalfWidths = r1.halfWidth + r2.halfWidth;
-  combinedHalfHeights = r1.halfHeight + r2.halfHeight;
-
-  //Check for a collision on the x axis
-  if (Math.abs(vx) < combinedHalfWidths) {
-
-    //A collision might be occuring. Check for a collision on the y axis
-    if (Math.abs(vy) < combinedHalfHeights) {
-
-      //There's definitely a collision happening
-      hit = true;
-    } else {
-
-      //There's no collision on the y axis
-      hit = false;
-    }
-  } else {
-
-    //There's no collision on the x axis
-    hit = false;
-  }
-
-  //`hit` will be either `true` or `false`
-  return hit;
-};
