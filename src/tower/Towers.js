@@ -9,13 +9,13 @@ class Towers {
     
   }
 
-  attack(wave) {
+  attack(wave, currentTime) {
     //TODO find enemy accoding to strategy: first, weakest, etc...
     if (!wave.isEmpty()){
     
       //Make the towers aim and shoot the enemy
       this.towers.forEach((tower) => {
-        tower.attack(wave.head())
+        tower.attack(wave.head(), currentTime)
       })
     }
   }

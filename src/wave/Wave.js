@@ -14,19 +14,18 @@ class Wave {
 
   }
 
-  move(map) {
+  move(map, currentTime) {
     this.enemies.forEach((e) => {
-      e.move(map)
-      //var index = this.enemies.indexOf(5);
-      //if (index > -1) {
-      //  this.enemies.splice(index, 1);
-      //}
+      e.move(map, currentTime)
     })
     
   }
   
-  cleanup(){
+  cleanup(currentTime){
     this.enemies.forEach((e) => {
+      if (e.state === ENUM_STATUS_DYING){
+        e.cleanup(currentTime)
+      }
       if (e.state === ENUM_STATUS_OUT_OF_BOUNDS || e.state === ENUM_STATUS_DEAD){
         var index = this.enemies.indexOf(e);
         if (index > -1) {
